@@ -1,0 +1,109 @@
+Siemka, zauważyłem ostatnio ze kurzy mi się bot do chatu na omegle więc wrzucam go tutaj, może komuś się przyda.
+Jest to prosty bot napisany w JavaScripcie, instalacja:
+
+-Kliknij f12, kolejno wklej kod bota w konsole.
+
+Funkcje: 
+* Automatyczne odpisywanie,
+* Odpisywanie po frazie,
+* Automatyczne przełączanie po braku aktywności,
+
+Kod bota:
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function sleep(ms) {
+  if (!ms) ms = getRndInteger(500, 1000);
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+class Bot {
+  constructor() {
+    this.name = "Jessica"; //okreslenie imienia
+    this.age = 21; //Okreslenie wieku.
+    this.dialogs = [
+      //Dialogi które wysyła po koleji.
+      "Hi Jessica 21 yo:)",
+      "What is your name?",
+      "Nice to meet you :D",
+      "Can you help me?",
+    ];
+    this.specialQuestion = {
+      //zaleznie od znalezionej frazy wysyła odpowiedz.
+      name: `My name is ${this.name} :)`,
+      age: `${this.age} yo :>`,
+    };
+    this.lastDialog = 0; //Linia dialogowa od startu.
+    this.autoDisconnect = 30000; //Po jakim czasie rozłączac gdy nie ma odpowiedz (sekunda*1000)
+    this.lastActivity = Date.now();
+  }
+
+  async main() {
+    while (1) {
+      this.connect = document.querySelector(".newchatbtnwrapper")
+        ? false
+        : true;
+
+      if (this.connect) {
+        await this.parseMessage();
+        if (this.lastStrangerMessage && this.dialogs.length > this.lastDialog) {
+          for (let i in this.specialQuestion) {
+            if (this.lastStrangerMessage.indexOf(i) != -1) {
+              await this.sendMessage(this.specialQuestion[i]);
+            }
+          }
+
+          await this.sendMessage(this.dialogs[this.lastDialog]);
+          this.lastDialog++;
+          if (this.lastDialog === this.dialogs.length) await this.closeChat();
+        }
+
+        if (Date.now() - this.lastActivity > this.autoDisconnect) {
+          this.lastActivity = Date.now();
+          await this.closeChat();
+        }
+      } else {
+        this.lastDialog = 0;
+        await this.newChat();
+      }
+      await sleep();
+    }
+  }
+
+  async newChat() {
+    document.querySelector(".disconnectbtn").click();
+  }
+
+  async closeChat() {
+    document.querySelector(".disconnectbtn").click();
+    await sleep();
+    document.querySelector(".disconnectbtn").click();
+  }
+
+  async sendMessage(text) {
+    document.querySelector(".chatmsg").value = text;
+    await sleep(1500, 5000);
+    document.querySelector(".sendbtn").click();
+  }
+
+  async parseMessage() {
+    this.lastStrangerMessage = false;
+
+    const html = document.querySelectorAll(".logitem")[
+      document.querySelectorAll(".logitem").length - 1
+    ];
+
+    if (html.querySelector(".strangermsg")) {
+      this.lastStrangerMessage = html.querySelector(
+        ".strangermsg span"
+      ).innerText;
+      this.lastActivity = Date.now();
+    }
+    
+  }
+}
+
+const bot = new Bot().main();
+

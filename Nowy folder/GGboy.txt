@@ -1,0 +1,48 @@
+Logujemy się do gg z przeglądarki
+Wciskamy ctrl+shift+j
+Wklejamy kod i enter (teraz kilka sekund nic się nie będzie działo a potem zacznie wysyłać)
+setInterval(function() {
+ 
+var list=document.getElementsByClassName('roulette')
+for(var i=0;i<list.length;i++){
+list[i].click()
+}
+ 
+setTimeout(function(){
+    var list=document.getElementsByClassName('btn-spin-the-roulette')
+for(var i=0;i<list.length;i++){
+list[i].click()
+}
+    var list=document.getElementsByClassName('btn-spin-again')
+for(var i=0;i<list.length;i++){
+list[i].click()
+}
+}, 1000);
+ 
+setTimeout(function(){
+var list=document.getElementsByClassName('btn-start-chat')
+for(var i=0;i<list.length;i++){
+list[i].click()
+}
+}, 9000);
+ 
+setTimeout(function(){
+document.getElementById("chat-text").innerHTML="Test";
+}, 12000);
+ 
+ setTimeout(function(){
+var list=document.getElementsByClassName('send-btn')
+for(var i=0;i<list.length;i++){
+list[i].click()
+}
+}, 13000);
+
+setTimeout(function(){
+var elms = document.querySelectorAll("[id='chat-text']");
+
+for(var i = 0; i < elms.length; i++) 
+  elms[i].id="zmiana-id";
+}, 14000); 
+}, 15000);
+I można sobie robić cokolwiek innego.
+(W 27 linii zmiana spamowanego tekstu, w ostatniej można wydłużyć czas, optymalnie jest 30000 ms)
